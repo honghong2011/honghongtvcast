@@ -184,7 +184,7 @@ adb install app/build/outputs/apk/debug/app-debug.apk
 - [Material Components](https://github.com/material-components/material-components-android) - Material Design 2 UI 库
 
 ### 致谢
-各个 ai 工具和模型，项目使用了 GLM deepseek MIMO KIMI DouBao-seed GPT 等模型进行开发。
+各个 ai 工具和模型，项目使用了 GLM deepseek trae等模型和工具进行开发。
 
 ## 路线图
 

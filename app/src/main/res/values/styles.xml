@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 应用主主题：Material Components NoActionBar Bridge
+         Bridge 兼容旧 AppCompat 属性，按钮自动获 Material 涟漪/圆角
+         TV 端无 ActionBar，leanback 焦点管理不受影响 -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+    </style>
+
+    <!-- 播放页全屏主题 -->
+    <style name="Theme.Player" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
+</resources>

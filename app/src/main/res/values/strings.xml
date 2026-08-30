@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">宏宏投屏</string>
+
+    <!-- 主页面 -->
+    <string name="status_waiting">等待同局域网设备投屏</string>
+    <string name="status_connected">正在投屏</string>
+    <string name="status_service_running">投屏服务运行中</string>
+    <string name="status_service_stopped">投屏服务已停止</string>
+    <string name="btn_settings">设置</string>
+    <string name="btn_exit_confirm">再按一次返回键退出应用</string>
+
+    <!-- 设置页 -->
+    <string name="settings_title">设置</string>
+    <string name="settings_boot_auto_start">开机自启动</string>
+    <string name="settings_device_name">设备名称</string>
+    <string name="settings_dlna_switch">DLNA 投屏</string>
+    <string name="settings_hw_decode">优先硬件解码</string>
+    <string name="settings_keep_screen_on">屏幕常亮</string>
+    <string name="settings_back">返回</string>
+    <string name="settings_saved">设置已保存</string>
+
+    <!-- 通知 -->
+    <string name="notification_channel_name">投屏服务</string>
+    <string name="notification_channel_desc">保持投屏服务后台运行</string>
+    <string name="notification_title">宏宏投屏</string>
+    <string name="notification_text">投屏接收服务运行中，可接收同局域网设备投屏</string>
+
+    <!-- 播放页 -->
+    <string name="player_error">播放错误，请检查视频源</string>
+    <string name="player_loading">正在加载…</string>
+</resources>

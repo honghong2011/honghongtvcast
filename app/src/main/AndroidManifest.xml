@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.hh2011.cast.tv">
+
+    <!-- ============ TV 特性声明 ============ -->
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="true" />
+
+    <!-- ============ DLNA 投屏所需权限 ============ -->
+    <!-- 网络通信（DLNA 协议交互 + 媒体流下载） -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- WiFi 状态（获取 IP/SSID + DLNA 设备发现） -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 网络状态（判断网络可用性） -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- WiFi 多播（SSDP 设备发现必需，允许接收多播包） -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+    <!-- 唤醒锁（屏幕关闭后保持投屏服务运行） -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 前台服务（Android 9.0+ 前台服务声明） -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- 开机自启动（接收 BOOT_COMPLETED 广播） -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <!-- 桌面快捷方式权限（仅 Android 5.0-7.1 主动创建快捷方式时需要；
+         Android 8.0+ 用 ShortcutManager.requestPinShortcut() 无需权限；
+         普通 launcher 图标入口不依赖此权限，仅靠下面 LAUNCHER/LEANBACK_LAUNCHER category） -->
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <application
+        android:allowBackup="true"
+        android:banner="@drawable/app_icon_your_company"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+
+        <!-- ============ 主页面 ============ -->
+        <!-- 桌面快捷方式（launcher 图标）双声明：
+             1. LEANBACK_LAUNCHER -> TV 桌面（Leanback banner 入口，应用显示在 TV 主屏"应用"行）
+             2. LAUNCHER          -> 普通安卓桌面（图标入口，适用于普通盒子/平板/手机 launcher）
+             banner/icon 均指向现有默认图标，后续画好正式图标后替换即可 -->
+        <activity
+            android:name=".MainActivity"
+            android:banner="@drawable/app_icon_your_company"
+            android:configChanges="orientation|keyboardHidden|screenSize|keyboard"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:logo="@mipmap/ic_launcher"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- ============ 设置页面 ============ -->
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="landscape" />
+
+        <!-- ============ 播放页面 ============ -->
+        <activity
+            android:name=".ui.PlayerActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.Player" />
+
+        <!-- ============ 投屏前台服务 ============ -->
+        <!-- CastService 继承 ClingUpnpService（AndroidUpnpServiceImpl），
+             既是 UPnP 协议引擎又是前台常驻服务 -->
+        <service
+            android:name=".service.CastService"
+            android:exported="false" />
+
+        <!-- ============ 开机自启动接收器 ============ -->
+        <receiver
+            android:name=".receiver.BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

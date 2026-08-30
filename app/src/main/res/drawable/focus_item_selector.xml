@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 设置项焦点背景选择器：聚焦时高亮，常态为普通项背景 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:drawable="@color/bg_item_focused"/>
+    <item android:drawable="@color/bg_item"/>
+</selector>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TV 端遥控器焦点背景 selector
+     焦点态用 bg_item_focused，默认态用 bg_item -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true" android:color="@color/bg_item_focused" />
+    <item android:color="@color/bg_item" />
+</selector>

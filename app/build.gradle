@@ -1,0 +1,121 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    // 编译 SDK 版本：28（Android 9.0），AS 3.5.3 支持的上限
+    compileSdkVersion 28
+    // 不指定 buildToolsVersion，让 Gradle 自动选择合适版本
+
+    defaultConfig {
+        // 应用包名
+        applicationId "com.hh2011.cast.tv"
+        // 最低支持版本：Android 5.0 (API 21)
+        minSdkVersion 21
+        // 目标版本：Android 9.0 (API 28)
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        // 开启 multidex：Cling + Jetty + ExoPlayer 方法数可能超 64K
+        // minSdk 21 原生支持，无需 multidex 支持库（对齐 HPlayer 配置）
+        multiDexEnabled true
+    }
+
+    // DEX 编译优化，适配 4GB 低配电脑
+    dexOptions {
+        // 限制 DEX 分配的最大内存
+        javaMaxHeapSize "1024m"
+        // 预编译 DEX，加快编译速度
+        preDexLibraries true
+    }
+
+    // 关闭冗余的 lint 检查，加快编译速度
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+        disable 'MissingTranslation', 'ExtraTranslation'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+
+    // 编译选项：Java 1.8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // Kotlin 编译选项
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    // 排除 META-INF/beans.xml 冲突（Cling/Jetty 依赖产生）
+    packagingOptions {
+        exclude 'META-INF/beans.xml'
+    }
+}
+
+dependencies {
+    // ==========================================
+    // 核心 UI 与系统兼容库
+    // ==========================================
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    // 谷歌官方 TV Leanback 框架，用于 Theme.Leanback 主题 + 遥控器焦点适配
+    implementation 'androidx.leanback:leanback:1.0.0'
+    // 谷歌 Material Design UI 库，统一 TV 端按钮、弹窗、列表样式
+    // 1.2.1 是 compileSdk 29 生态终点（1.3.0+ 需 compileSdk 30，AS 3.5.3 装不了）
+    implementation 'com.google.android.material:material:1.2.1'
+    // AndroidX 核心兼容库，提供 FragmentActivity 等
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+
+    // ==========================================
+    // 播放器核心库（ExoPlayer 2.16.0 + FFmpeg 扩展 + OkHttp 扩展）
+    // ==========================================
+    // ExoPlayer 播放器，谷歌官方播放器，支持多种流媒体格式
+    implementation 'com.google.android.exoplayer:exoplayer:2.16.0'
+    // ExoPlayer OkHttp 网络扩展：替换默认 HTTP 数据源为 OkHttpDataSource
+    implementation 'com.google.android.exoplayer:extension-okhttp:2.16.0'
+    // RTMP 直播流扩展：DefaultDataSource 遇到 rtmp:// 协议时会自动反射加载
+    // com.google.android.exoplayer2.ext.rtmp.RtmpDataSource（基于 librtmp 原生库）。
+    // 缺失时报警告 "Attempting to play RTMP stream without depending on the
+    // RTMP extension"，并把 rtmp:// 降级丢给 OkHttp -> "Malformed URL" 播放失败。
+    // 传递依赖 net.butterflytv:rtmp_client:3.1.0（jcenter，含各 ABI 的 .so，约 +4MB）
+    implementation 'com.google.android.exoplayer:extension-rtmp:2.16.0'
+    // FFmpeg 扩展，支持 MP2 等更多音频格式（本地 AAR 引入）
+    implementation files('libs/exoplayer-extension-ffmpeg-release.aar')
+
+    // ==========================================
+    // 网络库
+    // ==========================================
+    // OkHttp 网络请求框架，4.9.3 与 extension-okhttp:2.16.0 传递依赖一致
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+
+    // ==========================================
+    // DLNA 协议核心库（Cling 本地 JAR 引入，避开 4thline HTTP 仓库）
+    // ==========================================
+    // Cling UPnP/DLNA 协议栈，用于实现 DMR 媒体渲染器
+    // 使用本地 JAR（HPlayer 验证可用），版本 2.1.2
+    // 包含：cling-core、cling-support、seamless-http、seamless-util、seamless-xml
+    // Cling 底层依赖 Jetty（HTTP 服务组件）和 NanoHTTPD
+    // 注意：禁止 exclude 任何 jetty 模块！
+    // Jetty 依赖链 jetty-server -> jetty-http -> jetty-io -> jetty-util，
+    // 排除 jetty-util 会导致运行时 NoClassDefFoundError: AggregateLifeCycle 崩溃
+    // （开发计划模板的 exclude 仅为"Maven 远程拉 Cling"场景设计，
+    //   本项目用本地 JAR 引入 Cling，无 Maven 传递依赖，exclude 无意义且有害）
+    // HPlayer（targetSdk 31，验证可用）同样零 exclude，保持一致
+    implementation 'org.eclipse.jetty:jetty-server:8.1.22.v20160922'
+    implementation 'org.eclipse.jetty:jetty-servlet:8.1.22.v20160922'
+    implementation 'org.eclipse.jetty:jetty-client:8.1.22.v20160922'
+    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+}

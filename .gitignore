@@ -1,34 +1,56 @@
-# Gradle files
-.gradle/
-build/
-
-# Local configuration file (sdk path, etc)
-local.properties
-
-# Log/OS Files
-*.log
-
-# Android Studio generated files and folders
-captures/
+# Gradle / Build 产物
+**/build/
+**/.gradle/
+/captures/
 .externalNativeBuild/
 .cxx/
-*.aab
+
+# Android 编译产物
 *.apk
+*.ap_
+*.aab
+*.dex
+*.class
 output-metadata.json
 
-# IntelliJ
-*.iml
+# 签名密钥(严禁提交)
+*.jks
+*.keystore
+
+# Google Services (Firebase 等)
+google-services.json
+
+# Kotlin
+.kotlin/
+
+# IDE (整个 .idea,保留 codeStyles)
 .idea/
+!.idea/codeStyles/
+*.iml
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
-# Keystore files
-*.jks
-*.keystore
+# IDE / AI 助手配置目录
+.vscode/
+.trae/
+.claude/
+.cursor/
+.windsurf/
+.codeium/
+.aider*
 
-# Google Services (e.g. APIs or Firebase)
-google-services.json
+# 本地配置
+local.properties
 
-# Android Profiling
+# 日志/性能
+*.log
 *.hprof
+
+# 系统
+.DS_Store
+Thumbs.db
+
+# 个人笔记/调试记录(保留本地,不提交)
+chat-export-*.md
+log.txt
